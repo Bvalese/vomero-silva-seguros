@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vomero & Silva Seguros — Formulário do Cliente</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F0F5F9;min-height:100vh;}
+.page{max-width:640px;margin:0 auto;padding:1.5rem 1rem 4rem;}
+.header{background:#1A1A1A;border-radius:16px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.logo-icon{background:#29ABE2;border-radius:10px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.logo-icon svg{width:26px;height:26px;}
+.logo-text h1{font-size:17px;font-weight:700;color:#fff;letter-spacing:.02em;}
+.logo-text p{font-size:11px;color:#29ABE2;letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.intro{background:#E8F4FB;border:1px solid #B8DCF0;border-radius:12px;padding:14px 18px;margin-bottom:18px;font-size:13.5px;color:#2C5F7A;line-height:1.6;}
+.progress{display:flex;gap:6px;margin-bottom:20px;}
+.ps{flex:1;height:4px;border-radius:2px;background:#D0E8F5;transition:background .3s;}
+.ps.done{background:#29ABE2;}
+.ps.active{background:#29ABE2;opacity:.6;}
+.step{display:none;}
+.step.active{display:block;}
+.step-lbl{font-size:11px;font-weight:600;color:#8A9BB0;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+.card{background:#fff;border:1px solid #D0E4EF;border-radius:14px;padding:20px;margin-bottom:14px;}
+.card-title{font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.card-title svg{width:18px;height:18px;color:#29ABE2;flex-shrink:0;}
+.card-sub{font-size:13px;color:#6B7A8A;margin-bottom:16px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:#374151;margin-bottom:5px;}
+.req{color:#29ABE2;}
+.field input,.field select,.field textarea{
+  width:100%;font-family:inherit;font-size:16px;padding:11px 13px;
+  border:1.5px solid #D0E4EF;border-radius:10px;color:#1A1A1A;
+  background:#fff;outline:none;-webkit-appearance:none;appearance:none;
+  transition:border .15s,box-shadow .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:#29ABE2;box-shadow:0 0 0 3px rgba(41,171,226,.12);}
+.field input.err-input,.field select.err-input{border-color:#E53E3E;}
+.err-msg{font-size:12px;color:#E53E3E;margin-top:4px;display:none;}
+.err-msg.show{display:block;}
+.field textarea{min-height:80px;resize:vertical;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chk-grp{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.chk-opt{
+  padding:11px 14px;border:1.5px solid #D0E4EF;border-radius:10px;
+  font-size:14px;color:#374151;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  user-select:none;transition:all .15s;display:inline-block;
+}
+.chk-opt.on{border-color:#29ABE2;background:#E8F4FB;color:#1A6B9A;font-weight:600;}
+.rad-grp{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.rad-opt{
+  padding:11px 14px;border:1.5px solid #D0E4EF;border-radius:10px;
+  font-size:14px;color:#374151;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  user-select:none;transition:all .15s;display:inline-block;
+}
+.rad-opt.on{border-color:#29ABE2;background:#E8F4FB;color:#1A6B9A;font-weight:600;}
+.btn-row{display:flex;gap:10px;margin-top:18px;}
+.btn{
+  font-family:inherit;border:none;border-radius:10px;
+  padding:14px 20px;font-size:15px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn-next{background:#29ABE2;color:#fff;flex:1;}
+.btn-next:active{background:#1a90c2;}
+.btn-back{background:#fff;border:1.5px solid #D0E4EF;color:#374151;padding:14px 18px;}
+.btn-back:active{background:#f5f9fc;}
+.btn-send{background:#1A1A1A;color:#fff;flex:1;}
+.btn-send:active{background:#333;}
+.resumo td{padding:6px 0;vertical-align:top;font-size:13.5px;}
+.resumo td:first-child{color:#8A9BB0;width:42%;font-size:12.5px;}
+.resumo td:last-child{font-weight:500;color:#1A1A1A;}
+.success{display:none;text-align:center;padding:40px 16px;}
+.success.show{display:block;}
+.suc-icon{width:70px;height:70px;background:#E8F4FB;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.suc-icon svg{width:34px;height:34px;color:#29ABE2;}
+.success h2{font-size:22px;font-weight:700;color:#1A1A1A;margin-bottom:10px;}
+.success p{font-size:14px;color:#6B7A8A;line-height:1.7;max-width:400px;margin:0 auto 20px;}
+.suc-warn{display:none;margin:14px auto;max-width:420px;background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:14px 16px;font-size:13px;color:#7A5800;text-align:left;line-height:1.7;}
+.suc-warn.show{display:block;}
+.suc-contact{background:#F0F5F9;border-radius:12px;padding:16px;font-size:13px;color:#374151;}
+.suc-contact strong{color:#1A1A1A;display:block;margin-bottom:6px;}
+.divider{border:none;border-top:1px solid #EDF2F7;margin:14px 0;}
+@media(max-width:480px){
+  .grid2{grid-template-columns:1fr;}
+  .chk-opt,.rad-opt{width:100%;}
+  .btn-row{flex-direction:column;}
+  .btn-back{order:2;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="logo-icon">
+      <svg viewBox="0 0 28 28" fill="none">
+        <rect x="2" y="16" width="4" height="8" fill="white"/>
+        <rect x="8" y="11" width="4" height="13" fill="white"/>
+        <rect x="14" y="5" width="4" height="19" fill="white"/>
+        <rect x="20" y="12" width="4" height="12" fill="white"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <h1>VOMERO & SILVA</h1>
+      <p>Corretora de Seguros · SUSEP 202056495</p>
+    </div>
+  </div>
+
+  <div class="intro">Olá! Preencha as informações abaixo para que possamos preparar a sua cotação de seguro. Leva apenas <strong>2 minutinhos</strong> 😊</div>
+
+  <div class="progress">
+    <div class="ps active" id="ps1"></div>
+    <div class="ps" id="ps2"></div>
+    <div class="ps" id="ps3"></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step active" id="step1">
+    <div class="step-lbl">Passo 1 de 3 — Seus dados</div>
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Informações pessoais
+      </div>
+      <div class="card-sub">Precisamos de alguns dados básicos para identificar você.</div>
+
+      <div class="field">
+        <label>Nome completo <span class="req">*</span></label>
+        <input type="text" id="f-nome" placeholder="Seu nome e sobrenome" autocomplete="name">
+        <div class="err-msg" id="e-nome">Informe nome e sobrenome.</div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" id="f-cpf" placeholder="000.000.000-00" maxlength="14" inputmode="numeric">
+          <div class="err-msg" id="e-cpf">CPF inválido (precisa ter 11 dígitos).</div>
+        </div>
+        <div class="field">
+          <label>Data de nascimento <span class="req">*</span></label>
+          <input type="text" id="f-nasc" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric">
+          <div class="err-msg" id="e-nasc">Informe uma data válida.</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="f-email" placeholder="seu@email.com" autocomplete="email" inputmode="email">
+          <div class="err-msg" id="e-email">E-mail inválido.</div>
+        </div>
+        <div class="field">
+          <label>WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="f-tel" placeholder="(19) 99999-9999" maxlength="15" inputmode="tel">
+          <div class="err-msg" id="e-tel">Telefone inválido.</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>CEP <span class="req">*</span></label>
+          <input type="text" id="f-cep" placeholder="00000-000" maxlength="9" inputmode="numeric">
+          <div class="err-msg" id="e-cep">CEP inválido.</div>
+        </div>
+        <div class="field">
+          <label>Cidade/UF <span class="req">*</span></label>
+          <input type="text" id="f-cidade" placeholder="Ex.: Campinas/SP">
+          <div class="err-msg" id="e-cidade">Informe sua cidade.</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Qual seguro deseja cotar? <span class="req">*</span></label>
+        <div class="chk-grp" id="grp-tipo">
+          <div class="chk-opt" data-v="auto">🚗 Seguro Auto</div>
+          <div class="chk-opt" data-v="vida">❤️ Seguro de Vida</div>
+          <div class="chk-opt" data-v="residencial">🏠 Residencial</div>
+          <div class="chk-opt" data-v="empresarial">🏢 Empresarial</div>
+          <div class="chk-opt" data-v="saude">🩺 Plano de Saúde</div>
+          <div class="chk-opt" data-v="profissional">📋 Seg. Profissional</div>
+          <div class="chk-opt" data-v="rcmedico">➕ RC Médico</div>
+          <div class="chk-opt" data-v="consorcio">💰 Consórcio</div>
+          <div class="chk-opt" data-v="financiamento">💳 Financiamento</div>
+        </div>
+        <div class="err-msg" id="e-tipo">Selecione pelo menos um tipo de seguro.</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-next" id="btn1">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="step2">
+    <div class="step-lbl">Passo 2 de 3 — Dados do bem</div>
+    <div id="s2-content"></div>
+    <div class="btn-row">
+      <button class="btn btn-back" id="back2">← Voltar</button>
+      <button class="btn btn-next" id="btn2">Próximo →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="step3">
+    <div class="step-lbl">Passo 3 de 3 — Revisão e envio</div>
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Confirme seus dados
+      </div>
+      <div class="card-sub">Verifique antes de enviar.</div>
+      <table class="resumo" id="resumo" style="width:100%;border-collapse:collapse;"></table>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Alguma observação?
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <textarea id="f-obs" placeholder="Ex.: Já tenho seguro e quero renovar, quero incluir motorista jovem, tenho mais de um carro..."></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-back" id="back3">← Voltar</button>
+      <button class="btn btn-send" id="btn-send">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Enviar para cotação
+      </button>
+    </div>
+  </div>
+
+  <!-- SUCESSO -->
+  <div class="success" id="success">
+    <div class="suc-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <h2>Formulário enviado com sucesso!</h2>
+    <p>Recebemos suas informações. Nossa equipe irá analisar os dados e entrar em contato em breve com a melhor proposta para você.</p>
+    <div class="suc-warn" id="suc-warn">
+      <strong>⚠️ Atenção — alguns dados precisam de revisão:</strong><br>
+      <span id="suc-erros"></span>
+    </div>
+    <div class="suc-contact">
+      <strong>Vomero & Silva Corretora de Seguros</strong>
+      📞 (19) 3844-8428 &nbsp;|&nbsp; ✉️ marcelo@voneroesilvaseguros.com.br<br>
+      SUSEP Nº 202056495
+    </div>
+  </div>
+
+</div>
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbxnCmHfLb1-A0a5gR8Ny7lyWycCk2wAPDFyjToD55uJCL9WMq8_q7Bjhk_rkJFbO65BrA/exec';
+let dados = {};
+
+// ── MÁSCARAS ──────────────────────────────────────────────
+function mCPF(v){v=v.replace(/\D/g,'');v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d)/,'$1.$2');v=v.replace(/(\d{3})(\d{1,2})$/,'$1-$2');return v;}
+function mTel(v){v=v.replace(/\D/g,'');if(v.length<=10){v=v.replace(/^(\d{2})(\d)/,'($1) $2');v=v.replace(/(\d{4})(\d)/,'$1-$2');}else{v=v.replace(/^(\d{2})(\d)/,'($1) $2');v=v.replace(/(\d{5})(\d)/,'$1-$2');}return v;}
+function mCEP(v){v=v.replace(/\D/g,'');v=v.replace(/(\d{5})(\d)/,'$1-$2');return v;}
+function mData(v){v=v.replace(/\D/g,'');v=v.replace(/(\d{2})(\d)/,'$1/$2');v=v.replace(/(\d{2})(\d)/,'$1/$2');return v;}
+
+document.getElementById('f-cpf').addEventListener('input',function(){this.value=mCPF(this.value);});
+document.getElementById('f-tel').addEventListener('input',function(){this.value=mTel(this.value);});
+document.getElementById('f-cep').addEventListener('input',function(){this.value=mCEP(this.value);});
+document.getElementById('f-nasc').addEventListener('input',function(){this.value=mData(this.value);});
+
+// ── TAP HELPER (iOS + Android) ────────────────────────────
+function tap(el, fn){
+  let moved=false;
+  el.addEventListener('touchstart',function(){moved=false;},{passive:true});
+  el.addEventListener('touchmove',function(){moved=true;},{passive:true});
+  el.addEventListener('touchend',function(e){if(!moved){e.preventDefault();fn.call(el);}});
+  el.addEventListener('click',function(){fn.call(el);});
+}
+
+// ── CHECKBOXES (tipo de seguro) ───────────────────────────
+document.querySelectorAll('#grp-tipo .chk-opt').forEach(function(opt){
+  tap(opt, function(){ opt.classList.toggle('on'); });
+});
+
+function getTipos(){
+  return Array.from(document.querySelectorAll('#grp-tipo .chk-opt.on')).map(function(o){return o.dataset.v;});
+}
+
+// ── VALIDAÇÃO STEP 1 ──────────────────────────────────────
+function validaCPF(cpf){
+  cpf=cpf.replace(/\D/g,'');
+  if(cpf.length!==11||/^(\d)\1+$/.test(cpf))return false;
+  let s=0;for(let i=0;i<9;i++)s+=parseInt(cpf[i])*(10-i);
+  let r=s%11;let d1=r<2?0:11-r;
+  if(parseInt(cpf[9])!==d1)return false;
+  s=0;for(let i=0;i<10;i++)s+=parseInt(cpf[i])*(11-i);
+  r=s%11;let d2=r<2?0:11-r;
+  return parseInt(cpf[10])===d2;
+}
+
+function validaData(v){
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(v))return false;
+  const p=v.split('/');const d=parseInt(p[0]),m=parseInt(p[1]),a=parseInt(p[2]);
+  if(m<1||m>12||d<1||d>31)return false;
+  const dt=new Date(a,m-1,d);
+  if(dt.getFullYear()!==a||dt.getMonth()!==m-1||dt.getDate()!==d)return false;
+  const hoje=new Date();const idade=hoje.getFullYear()-a;
+  return idade>=0&&idade<=120;
+}
+
+function setErr(inputId,errId,show){
+  const el=document.getElementById(inputId);
+  const em=document.getElementById(errId);
+  if(show){el.classList.add('err-input');em.classList.add('show');}
+  else{el.classList.remove('err-input');em.classList.remove('show');}
+}
+
+function valida1(){
+  let ok=true;
+  const nome=document.getElementById('f-nome').value.trim();
+  setErr('f-nome','e-nome',nome.split(' ').filter(function(w){return w.length>0;}).length<2);
+  if(nome.split(' ').filter(function(w){return w.length>0;}).length<2)ok=false;
+
+  const cpf=document.getElementById('f-cpf').value;
+  const cpfOk=validaCPF(cpf);
+  setErr('f-cpf','e-cpf',!cpfOk);
+  if(!cpfOk)ok=false;
+
+  const nasc=document.getElementById('f-nasc').value;
+  const nascOk=validaData(nasc);
+  setErr('f-nasc','e-nasc',!nascOk);
+  if(!nascOk)ok=false;
+
+  const email=document.getElementById('f-email').value.trim();
+  const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setErr('f-email','e-email',!emailOk);
+  if(!emailOk)ok=false;
+
+  const tel=document.getElementById('f-tel').value.replace(/\D/g,'');
+  setErr('f-tel','e-tel',tel.length<10);
+  if(tel.length<10)ok=false;
+
+  const cep=document.getElementById('f-cep').value.replace(/\D/g,'');
+  setErr('f-cep','e-cep',cep.length!==8);
+  if(cep.length!==8)ok=false;
+
+  const cidade=document.getElementById('f-cidade').value.trim();
+  setErr('f-cidade','e-cidade',cidade.length<3);
+  if(cidade.length<3)ok=false;
+
+  const tipos=getTipos();
+  const tipoErr=tipos.length===0;
+  document.getElementById('e-tipo').classList.toggle('show',tipoErr);
+  if(tipoErr)ok=false;
+
+  return ok;
+}
+
+// ── STEP 2 CONTENT ────────────────────────────────────────
+function montaStep2(){
+  const tipos=getTipos();
+  let html='';
+
+  if(tipos.indexOf('auto')>=0){
+    html+=`<div class="card">
+      <div class="card-title"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg> Dados do veículo</div>
+      <div class="card-sub">Informe o carro a ser segurado.</div>
+      <div class="grid2">
+        <div class="field"><label>Marca e modelo <span class="req">*</span></label><input type="text" id="v-modelo" placeholder="Ex.: Toyota Yaris"><div class="err-msg" id="e-vmod">Informe o modelo.</div></div>
+        <div class="field"><label>Ano de fabricação <span class="req">*</span></label><input type="text" id="v-ano" placeholder="Ex.: 2022" maxlength="4" inputmode="numeric"><div class="err-msg" id="e-vano">Informe o ano.</div></div>
+        <div class="field"><label>Placa</label><input type="text" id="v-placa" placeholder="Ex.: ABC1D23"></div>
+        <div class="field"><label>Já tem seguro?</label><select id="v-sit"><option value="">Selecione...</option><option>Sim, quero renovar</option><option>Não, é novo seguro</option></select></div>
+      </div>
+      <div class="field"><label>Seguradora atual (se tiver)</label><input type="text" id="v-seg" placeholder="Ex.: Porto Seguro, Allianz..."></div>
+      <div class="field">
+        <label>Condutor principal é você?</label>
+        <div class="rad-grp" id="grp-condutor">
+          <div class="rad-opt" data-g="condutor" data-v="sim">✅ Sim, sou eu</div>
+          <div class="rad-opt" data-g="condutor" data-v="nao">👤 Não, é outra pessoa</div>
+        </div>
+      </div>
+      <div class="field" id="campo-condutor-idade" style="display:none;">
+        <label>Idade do condutor principal</label>
+        <input type="text" id="v-cond-idade" placeholder="Ex.: 32 anos" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>O veículo pernoita em:</label>
+        <div class="rad-grp" id="grp-pernoite">
+          <div class="rad-opt" data-g="pernoite" data-v="garagem">🏠 Garagem</div>
+          <div class="rad-opt" data-g="pernoite" data-v="local_aberto">🅿️ Local aberto</div>
+          <div class="rad-opt" data-g="pernoite" data-v="rua">🛣️ Via pública</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if(tipos.indexOf('residencial')>=0){
+    html+=`<div class="card">
+      <div class="card-title"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Dados do imóvel</div>
+      <div class="grid2">
+        <div class="field"><label>Tipo do imóvel</label><select id="res-tipo"><option>Casa</option><option>Apartamento</option><option>Sítio/Chácara</option></select></div>
+        <div class="field"><label>Valor estimado</label><input type="text" id="res-val" placeholder="Ex.: R$ 350.000"></div>
+      </div>
+      <div class="field"><label>Endereço do imóvel</label><input type="text" id="res-end" placeholder="Rua, número, bairro, cidade/UF"></div>
+    </div>`;
+  }
+
+  if(tipos.indexOf('empresarial')>=0){
+    html+=`<div class="card">
+      <div class="card-title"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> Dados da empresa</div>
+      <div class="grid2">
+        <div class="field"><label>Razão social</label><input type="text" id="emp-nome" placeholder="Nome da empresa"></div>
+        <div class="field"><label>Ramo de atividade</label><input type="text" id="emp-ramo" placeholder="Ex.: Comércio, Serviços"></div>
+      </div>
+    </div>`;
+  }
+
+  if(tipos.indexOf('vida')>=0||tipos.indexOf('saude')>=0||tipos.indexOf('profissional')>=0||tipos.indexOf('rcmedico')>=0){
+    html+=`<div class="card">
+      <div class="card-title"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg> Informações complementares</div>
+      <div class="grid2">
+        <div class="field"><label>Profissão / especialidade</label><input type="text" id="comp-prof" placeholder="Ex.: Médico, Engenheiro"></div>
+        <div class="field"><label>Dependentes (se houver)</label><input type="text" id="comp-dep" placeholder="Ex.: Cônjuge + 2 filhos"></div>
+      </div>
+    </div>`;
+  }
+
+  if(tipos.indexOf('consorcio')>=0||tipos.indexOf('financiamento')>=0){
+    html+=`<div class="card">
+      <div class="card-title"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg> Consórcio / Financiamento</div>
+      <div class="grid2">
+        <div class="field"><label>Tipo do bem</label><select id="fin-bem"><option>Imóvel</option><option>Automóvel</option><option>Moto</option><option>Caminhão</option><option>Outro</option></select></div>
+        <div class="field"><label>Valor aproximado</label><input type="text" id="fin-val" placeholder="Ex.: R$ 200.000"></div>
+      </div>
+    </div>`;
+  }
+
+  if(!html){
+    html='<div class="card"><p style="color:#6B7A8A;font-size:14px;text-align:center;padding:8px;">Sem dados adicionais necessários.</p></div>';
+  }
+
+  document.getElementById('s2-content').innerHTML=html;
+
+  // Bind radio opts
+  document.querySelectorAll('#s2-content .rad-opt').forEach(function(opt){
+    tap(opt, function(){
+      const g=opt.dataset.g;
+      document.querySelectorAll('#s2-content .rad-opt[data-g="'+g+'"]').forEach(function(o){o.classList.remove('on');});
+      opt.classList.add('on');
+      if(g==='condutor'){
+        const campo=document.getElementById('campo-condutor-idade');
+        if(campo) campo.style.display=opt.dataset.v==='nao'?'block':'none';
+      }
+    });
+  });
+}
+
+function valida2(){
+  const tipos=getTipos();
+  let ok=true;
+  if(tipos.indexOf('auto')>=0){
+    const mod=document.getElementById('v-modelo');
+    const ano=document.getElementById('v-ano');
+    if(mod&&!mod.value.trim()){mod.classList.add('err-input');const e=document.getElementById('e-vmod');if(e)e.classList.add('show');ok=false;}
+    if(ano&&!ano.value.trim()){ano.classList.add('err-input');const e=document.getElementById('e-vano');if(e)e.classList.add('show');ok=false;}
+  }
+  return ok;
+}
+
+// ── RESUMO ────────────────────────────────────────────────
+const TIPO_LABELS={auto:'🚗 Seguro Auto',vida:'❤️ Seguro de Vida',residencial:'🏠 Residencial',empresarial:'🏢 Empresarial',saude:'🩺 Plano de Saúde',profissional:'📋 Seg. Profissional',rcmedico:'➕ RC Médico',consorcio:'💰 Consórcio',financiamento:'💳 Financiamento'};
+
+function montaResumo(){
+  const r=function(l,v){return v?'<tr><td>'+l+'</td><td>'+v+'</td></tr>':'';};
+  let h='';
+  h+=r('Nome',document.getElementById('f-nome').value);
+  h+=r('CPF',document.getElementById('f-cpf').value);
+  h+=r('Nascimento',document.getElementById('f-nasc').value);
+  h+=r('E-mail',document.getElementById('f-email').value);
+  h+=r('WhatsApp',document.getElementById('f-tel').value);
+  h+=r('Cidade',document.getElementById('f-cidade').value);
+  h+=r('Seguros',getTipos().map(function(t){return TIPO_LABELS[t]||t;}).join(', '));
+  const mod=document.getElementById('v-modelo');
+  const ano=document.getElementById('v-ano');
+  if(mod&&mod.value)h+=r('Veículo',mod.value+' '+(ano?ano.value:''));
+  const condSel=document.querySelector('#s2-content .rad-opt[data-g="condutor"].on');
+  const pertSel=document.querySelector('#s2-content .rad-opt[data-g="pernoite"].on');
+  if(condSel)h+=r('Condutor principal',condSel.dataset.v==='sim'?'Titular':'Outra pessoa');
+  if(pertSel)h+=r('Pernoite',pertSel.textContent.trim());
+  document.getElementById('resumo').innerHTML=h;
+}
+
+function coletaDados(){
+  const tipos=getTipos();
+  dados={
+    nome:document.getElementById('f-nome').value.trim(),
+    cpf:document.getElementById('f-cpf').value,
+    nascimento:document.getElementById('f-nasc').value,
+    email:document.getElementById('f-email').value.trim(),
+    telefone:document.getElementById('f-tel').value,
+    cep:document.getElementById('f-cep').value,
+    cidade:document.getElementById('f-cidade').value.trim(),
+    tipos_seguro:tipos,
+    observacoes:document.getElementById('f-obs')?document.getElementById('f-obs').value:''
+  };
+  const mod=document.getElementById('v-modelo');
+  if(mod){
+    const condSel=document.querySelector('#s2-content .rad-opt[data-g="condutor"].on');
+    const pertSel=document.querySelector('#s2-content .rad-opt[data-g="pernoite"].on');
+    const condIdade=document.getElementById('v-cond-idade');
+    dados.veiculo={
+      modelo:mod.value,
+      ano:document.getElementById('v-ano')?document.getElementById('v-ano').value:'',
+      placa:document.getElementById('v-placa')?document.getElementById('v-placa').value:'',
+      situacao:document.getElementById('v-sit')?document.getElementById('v-sit').value:'',
+      segAtual:document.getElementById('v-seg')?document.getElementById('v-seg').value:'',
+      condutor:condSel?(condSel.dataset.v==='sim'?'Titular':'Outra pessoa'):'',
+      condutorIdade:condIdade?condIdade.value:'',
+      pernoite:pertSel?pertSel.textContent.trim():''
+    };
+  }
+}
+
+// ── NAVEGAÇÃO ─────────────────────────────────────────────
+function irPara(n){
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('step'+n).classList.add('active');
+  for(let i=1;i<=3;i++){
+    const el=document.getElementById('ps'+i);
+    el.className='ps'+(i<n?' done':i===n?' active':'');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+tap(document.getElementById('btn1'), function(){
+  if(!valida1())return;
+  montaStep2();
+  irPara(2);
+});
+tap(document.getElementById('back2'), function(){ irPara(1); });
+tap(document.getElementById('btn2'), function(){
+  if(!valida2())return;
+  coletaDados();
+  montaResumo();
+  irPara(3);
+});
+tap(document.getElementById('back3'), function(){ irPara(2); });
+tap(document.getElementById('btn-send'), enviar);
+
+// ── ENVIO ─────────────────────────────────────────────────
+async function enviar(){
+  coletaDados();
+
+  const erros=[];
+  if(!validaCPF(dados.cpf))erros.push('CPF inválido');
+  if(!validaData(dados.nascimento))erros.push('Data de nascimento inválida');
+  if(!dados.email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(dados.email))erros.push('E-mail inválido');
+
+  let obs='Formulário enviado em '+new Date().toLocaleString('pt-BR')+'. ';
+  obs+='Seguros: '+dados.tipos_seguro.map(function(t){return TIPO_LABELS[t]||t;}).join(', ')+'. ';
+  if(dados.veiculo&&dados.veiculo.modelo){
+    obs+='Veículo: '+dados.veiculo.modelo+' '+dados.veiculo.ano;
+    if(dados.veiculo.placa)obs+=' - '+dados.veiculo.placa;
+    obs+='. ';
+    if(dados.veiculo.segAtual)obs+='Seg. atual: '+dados.veiculo.segAtual+'. ';
+    if(dados.veiculo.condutor)obs+='Condutor: '+dados.veiculo.condutor+(dados.veiculo.condutorIdade?' ('+dados.veiculo.condutorIdade+')':'')+'. ';
+    if(dados.veiculo.pernoite)obs+='Pernoite: '+dados.veiculo.pernoite+'. ';
+  }
+  if(dados.observacoes)obs+='Obs: '+dados.observacoes;
+  if(erros.length>0)obs+=' | PENDÊNCIAS: '+erros.join(', ');
+
+  const novoCliente={
+    id:String(Date.now()),
+    nome:dados.nome,
+    email:dados.email,
+    tel:dados.telefone,
+    cpf:dados.cpf,
+    cidade:dados.cidade,
+    nasc:dados.nascimento,
+    produtos:dados.tipos_seguro,
+    obs:obs,
+    status:erros.length>0?'pendente':'ok',
+    criado:new Date().toLocaleDateString('pt-BR')
+  };
+
+  // LocalStorage
+  try{
+    const local=JSON.parse(localStorage.getItem('vs_clientes')||'[]');
+    local.unshift(novoCliente);
+    localStorage.setItem('vs_clientes',JSON.stringify(local));
+    localStorage.setItem('vs_novo_cliente',JSON.stringify({nome:novoCliente.nome,hora:new Date().toLocaleString('pt-BR'),status:novoCliente.status,erros:erros}));
+  }catch(e){}
+
+  // Apps Script API
+  if(API_URL){
+    const body={ acao:'salvar', cliente: novoCliente };
+    console.log('Enviando para API:',JSON.stringify(body));
+    try{
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});
+      const d=await r.json();
+      console.log('API resposta:',JSON.stringify(d));
+    }catch(e){console.log('API erro:',e);}
+  } else {
+    console.log('API não configurada — salvo apenas localmente');
+  }
+
+  // Sucesso
+  document.querySelectorAll('.step,.intro,.progress').forEach(function(el){el.style.display='none';});
+  document.getElementById('success').classList.add('show');
+  if(erros.length>0){
+    document.getElementById('suc-warn').classList.add('show');
+    document.getElementById('suc-erros').textContent=erros.join(', ');
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
