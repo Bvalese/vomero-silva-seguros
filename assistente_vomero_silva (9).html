@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistente Vomero & Silva Seguros</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F5F9;
+  --surface: #FFFFFF;
+  --surface2: #E8F4FB;
+  --border: #C8DFF0;
+  --accent: #1A1A1A;
+  --accent2: #29ABE2;
+  --text: #1A1A1A;
+  --text2: #4A5568;
+  --text3: #8A9BB0;
+  --success: #1A6B3C;
+  --success-bg: #D4EDDA;
+  --danger: #9B2226;
+  --danger-bg: #FFCCD5;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* LAYOUT */
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 240px; background: #1A1A1A; padding: 0; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-logo h1 { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; letter-spacing: 0.02em; }
+.sidebar-logo span { font-size: 10px; color: #29ABE2; letter-spacing: 0.12em; text-transform: uppercase; display: block; margin-top: 3px; font-weight: 500; }
+.sidebar-nav { padding: 16px 12px; flex: 1; overflow-y: auto; }
+.nav-section { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 8px 6px; margin-top: 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.7); font-size: 13.5px; transition: all 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: rgba(41,171,226,0.15); color: #29ABE2; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+.nav-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 10px 0; }
+.sidebar-footer { padding: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+.corretor-info { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.corretor-info strong { color: rgba(255,255,255,0.8); display: block; }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { background: var(--surface); border-bottom: 2px solid #29ABE2; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title { font-size: 17px; font-weight: 500; color: var(--text); }
+.topbar-title span { color: var(--text2); font-weight: 400; font-size: 14px; margin-left: 8px; }
+.topbar-actions { display: flex; gap: 8px; }
+.content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+.card-icon { width: 32px; height: 32px; border-radius: 8px; background: #E8F4FB; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.card-icon svg { width: 16px; height: 16px; color: #29ABE2; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.card-subtitle { font-size: 12px; color: var(--text2); }
+
+/* FORM */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; font-weight: 500; color: var(--text2); }
+.field input, .field select, .field textarea {
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; padding: 9px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius); color: var(--text);
+  background: var(--surface); outline: none; transition: border 0.15s, box-shadow 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: #29ABE2; box-shadow: 0 0 0 3px rgba(41,171,226,0.12);
+}
+.field textarea { min-height: 78px; resize: vertical; }
+.field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+
+/* BUTTONS */
+.btn { font-family: 'DM Sans', sans-serif; cursor: pointer; border-radius: var(--radius); font-size: 13.5px; font-weight: 500; transition: all 0.15s; border: none; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; }
+.btn-primary { background: #29ABE2; color: #fff; width: 100%; justify-content: center; padding: 12px; font-size: 14px; margin-top: 4px; }
+.btn-primary:hover { background: #1a90c2; }
+.btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+.btn-secondary:hover { background: var(--surface2); }
+.btn-gold { background: var(--accent2); color: #fff; }
+.btn-gold:hover { background: #b8963f; }
+.btn-sm { padding: 6px 12px; font-size: 12.5px; }
+.btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #ffb3c1; }
+.btn-danger:hover { background: #ffc8d3; }
+
+/* EMAIL OUTPUT */
+.email-output { display: none; margin-top: 16px; }
+.email-output.visible { display: block; }
+.email-result-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.email-result-label { font-size: 13px; font-weight: 600; color: var(--success); display: flex; align-items: center; gap: 6px; }
+.email-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; white-space: pre-wrap; font-size: 13px; line-height: 1.8; color: var(--text); max-height: 480px; overflow-y: auto; font-family: 'Courier New', monospace; }
+.copied-msg { font-size: 12px; color: var(--success); opacity: 0; transition: opacity 0.3s; margin-left: 6px; }
+.copied-msg.show { opacity: 1; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+.section-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 10px; margin-top: 4px; }
+
+/* CLIENTS */
+.client-list { display: flex; flex-direction: column; gap: 8px; }
+.client-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: all 0.15s; }
+.client-card:hover { border-color: #29ABE2; box-shadow: 0 2px 8px rgba(41,171,226,0.12); }
+.client-avatar { width: 38px; height: 38px; border-radius: 50%; background: #E8F4FB; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #29ABE2; flex-shrink: 0; }
+.client-info { flex: 1; }
+.client-name { font-size: 14px; font-weight: 500; color: var(--text); }
+.client-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.client-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.tag-auto { background: #DBEAFE; color: #1e40af; }
+.tag-vida { background: #D1FAE5; color: #065f46; }
+.tag-res { background: #FEF3C7; color: #92400e; }
+.tag-emp { background: #FCE7F3; color: #9d174d; }
+.tag-saude { background: #EDE9FE; color: #5b21b6; }
+.tag-cons { background: #FFF7ED; color: #c2410c; }
+.tag-fin { background: #F0FDF4; color: #166534; }
+.tag-prof { background: #FDF2F8; color: #86198f; }
+.tag-rc { background: #F0F9FF; color: #0369a1; }
+.client-actions { display: flex; gap: 6px; }
+.empty-state { text-align: center; padding: 48px 20px; color: var(--text2); }
+.empty-state svg { width: 40px; height: 40px; color: var(--text3); margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+.empty-state small { font-size: 12px; color: var(--text3); }
+
+/* SEARCH */
+.search-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+.search-bar input { flex: 1; font-family: 'DM Sans', sans-serif; font-size: 13.5px; padding: 9px 14px; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); background: var(--surface); outline: none; }
+.search-bar input:focus { border-color: #29ABE2; }
+
+/* DASHBOARD */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; }
+.stat-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+.stat-value { font-size: 26px; font-weight: 600; color: var(--text); font-family: 'DM Serif Display', serif; }
+.stat-sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.stat-accent { border-left: 3px solid #29ABE2; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: var(--radius-lg); padding: 24px; width: 480px; max-width: 95vw; max-height: 85vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-title { font-size: 16px; font-weight: 600; }
+.modal-close { background: none; border: none; cursor: pointer; color: var(--text2); font-size: 20px; padding: 4px; }
+
+/* TABS dentro de form */
+.form-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.form-tab { padding: 6px 14px; font-size: 12.5px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); cursor: pointer; color: var(--text2); font-weight: 500; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.form-tab.active { background: #29ABE2; color: #fff; border-color: #29ABE2; }
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+
+/* BADGE */
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.badge-blue { background: #DBEAFE; color: #1e40af; }
+.badge-green { background: #D1FAE5; color: #065f46; }
+
+@media (max-width: 768px) {
+  .sidebar { width: 200px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .content { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <div style="background:#29ABE2;border-radius:6px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="12" width="3" height="6" fill="white"/><rect x="6.5" y="8" width="3" height="10" fill="white"/><rect x="11" y="4" width="3" height="14" fill="white"/><rect x="15.5" y="9" width="3" height="9" fill="white"/></svg>
+        </div>
+        <div>
+          <h1>VOMERO & SILVA</h1>
+          <span>Corretora de Seguros</span>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <button class="nav-item active" onclick="navTo('dashboard', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="navTo('clientes', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+        Clientes
+      </button>
+
+      <div class="nav-section">E-mails</div>
+      <button class="nav-item" onclick="navTo('auto', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1"/></svg>
+        Seguro Auto
+      </button>
+      <button class="nav-item" onclick="navTo('vida', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Seguro de Vida
+      </button>
+      <button class="nav-item" onclick="navTo('residencial', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Seguro Residencial
+      </button>
+      <button class="nav-item" onclick="navTo('empresarial', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        Seguro Empresarial
+      </button>
+      <button class="nav-item" onclick="navTo('saude', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Plano de Saúde
+      </button>
+      <button class="nav-item" onclick="navTo('profissional', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Seguro Profissional
+      </button>
+      <button class="nav-item" onclick="navTo('rcmedico', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-3-3v6"/><circle cx="12" cy="12" r="9"/></svg>
+        RC Médico
+      </button>
+      <button class="nav-item" onclick="navTo('consorcio', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg>
+        Consórcio
+      </button>
+      <button class="nav-item" onclick="navTo('financiamento', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Financiamento
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="corretor-info">
+        <strong>Marcelo Vomero</strong>
+        SUSEP Nº 202056495<br>
+        (19) 3844-8428
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard <span id="topbar-sub"></span></div>
+      <div class="topbar-actions" id="topbar-actions">
+        <div id="sheets-status" style="display:none;font-size:12px;padding:5px 12px;border-radius:8px;font-weight:500;transition:all 0.3s;"></div>
+        <div id="sheets-loading" style="display:none;font-size:12px;color:#29ABE2;">⏳ Sincronizando...</div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('modal-sheets').classList.add('open')" title="Configurar Google Sheets">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+          Google Sheets
+        </button>
+      </div>
+    </div>
+    <div id="notif-banner" style="display:none;background:#E8F4FB;border-bottom:2px solid #29ABE2;padding:12px 28px;display:none;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:#1A6B9A;">
+        <svg width="18" height="18" fill="none" stroke="#29ABE2" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="notif-msg"></span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="irParaClientesNotif()" style="font-size:12px;padding:5px 12px;">Ver cliente</button>
+        <button onclick="fecharNotif()" style="background:none;border:none;cursor:pointer;color:#8A9BB0;font-size:18px;padding:0 4px;">✕</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="section active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card stat-accent">
+            <div class="stat-label">Total de Clientes</div>
+            <div class="stat-value" id="stat-clientes">0</div>
+            <div class="stat-sub">cadastrados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">E-mails Gerados</div>
+            <div class="stat-value" id="stat-emails">0</div>
+            <div class="stat-sub">nesta sessão</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Renovações</div>
+            <div class="stat-value" id="stat-renovacoes">0</div>
+            <div class="stat-sub">registradas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Novas Propostas</div>
+            <div class="stat-value" id="stat-propostas">0</div>
+            <div class="stat-sub">registradas</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg></div>
+            <div><div class="card-title">Últimos clientes cadastrados</div></div>
+          </div>
+          <div id="dashboard-recent"></div>
+        </div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="section" id="sec-clientes">
+        <div class="search-bar">
+          <input type="text" id="search-input" placeholder="Buscar cliente por nome, e-mail ou telefone..." oninput="filtrarClientes()">
+          <button class="btn btn-primary" style="width:auto;margin-top:0;" onclick="abrirNovoCliente()">+ Novo Cliente</button>
+        </div>
+        <div id="lista-clientes"><div class="empty-state"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg><p>Nenhum cliente cadastrado ainda</p><small>Clique em "Novo Cliente" para começar</small></div></div>
+      </div>
+
+      <!-- AUTO -->
+      <div class="section" id="sec-auto">
+        <div class="form-tabs">
+          <button class="form-tab active" onclick="switchFormTab('auto','renovacao',this)">🔄 Renovação</button>
+          <button class="form-tab" onclick="switchFormTab('auto','proposta',this)">📄 Nova Proposta</button>
+        </div>
+        <div class="form-panel active" id="auto-renovacao">
+          <div id="auto-ren-cliente-selector"></div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+            <div class="grid-2">
+              <div class="field"><label>Nome completo</label><input type="text" id="ar-nome" placeholder="Ex.: Solange Aparecida Zorge Vasconcelos"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="ar-email" placeholder="Ex.: solangezorge@gmail.com"></div>
+              <div class="field"><label>Telefone / WhatsApp</label><input type="text" id="ar-tel" placeholder="Ex.: (19) 98819-8812"></div>
+              <div class="field"><label>Cidade/UF</label><input type="text" id="ar-cidade" placeholder="Ex.: Artur Nogueira/SP"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg></div><div><div class="card-title">Veículo & Proposta</div></div></div>
+            <div class="grid-3">
+              <div class="field"><label>Veículo</label><input type="text" id="ar-veiculo" placeholder="Ex.: Toyota Yaris 2021"></div>
+              <div class="field"><label>Placa</label><input type="text" id="ar-placa" placeholder="Ex.: DVK9E35"></div>
+              <div class="field"><label>Seguradora</label><select id="ar-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro / Azul</option><option>Itaú</option><option>Mapfre</option><option>HDI</option><option>Bradesco</option><option>Tokio Marine</option><option>Zurich</option><option>Suhai</option><option>Mitsui</option><option>Yellow</option></select></div>
+              <div class="field"><label>Nº da proposta</label><input type="text" id="ar-proposta" placeholder="Ex.: 138140063"></div>
+              <div class="field"><label>Vigência</label><input type="text" id="ar-vigencia" placeholder="Ex.: 31/05/2026 a 31/05/2027"></div>
+              <div class="field"><label>Valor total</label><input type="text" id="ar-valor" placeholder="Ex.: R$ 1.999,51"></div>
+              <div class="field"><label>Forma de pagamento</label><input type="text" id="ar-pgto" placeholder="Ex.: 10x de R$ 199,95 no cartão"></div>
+              <div class="field"><label>Coberturas principais</label><input type="text" id="ar-cob" placeholder="Ex.: Compreensivo 100% FIPE, RCF R$100k, Vidros, Assistência 24h"></div>
+              <div class="field"><label>Franquia</label><input type="text" id="ar-franquia" placeholder="Ex.: R$ 3.902,56 (50% normal)"></div>
+            </div>
+            <hr class="divider">
+            <div class="section-label">Comparativo com seguro anterior</div>
+            <div class="grid-2">
+              <div class="field"><label>Seguradora anterior</label><input type="text" id="ar-seg-ant" placeholder="Ex.: Porto Seguro"></div>
+              <div class="field"><label>Valor anterior</label><input type="text" id="ar-val-ant" placeholder="Ex.: R$ 2.100,00"></div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label>Observações / diferenciais</label><textarea id="ar-obs" placeholder="Ex.: Mantivemos cobertura completa com redução no valor. Carro reserva 7 dias incluso."></textarea></div>
+          </div>
+          <button class="btn btn-primary" onclick="gerarEmailAuto('renovacao')">✉️ Gerar e-mail de renovação</button>
+          <div class="email-output" id="out-ar">
+            <div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado com sucesso</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-ar-txt','cp-ar')">📋 Copiar</button><span class="copied-msg" id="cp-ar">✓ Copiado!</span></div></div>
+            <div class="email-box" id="out-ar-txt"></div>
+          </div>
+        </div>
+        <div class="form-panel" id="auto-proposta">
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+            <div class="grid-2">
+              <div class="field"><label>Nome completo</label><input type="text" id="ap-nome" placeholder="Ex.: Luís Carlos Azevedo"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="ap-email" placeholder="Ex.: luis.azevedo01@hotmail.com"></div>
+              <div class="field"><label>Telefone / WhatsApp</label><input type="text" id="ap-tel" placeholder="Ex.: (19) 99245-7120"></div>
+              <div class="field"><label>Cidade/UF</label><input type="text" id="ap-cidade" placeholder="Ex.: Hortolândia/SP"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="2"/></svg></div><div><div class="card-title">Veículo & Proposta</div></div></div>
+            <div class="grid-3">
+              <div class="field"><label>Veículo</label><input type="text" id="ap-veiculo" placeholder="Ex.: GM Montana 1.4 2012"></div>
+              <div class="field"><label>Placa</label><input type="text" id="ap-placa" placeholder="Ex.: FBA8921"></div>
+              <div class="field"><label>Seguradora</label><select id="ap-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro / Azul</option><option>Itaú</option><option>Mapfre</option><option>HDI</option><option>Bradesco</option><option>Tokio Marine</option><option>Zurich</option><option>Suhai</option><option>Mitsui</option><option>Yellow</option></select></div>
+              <div class="field"><label>Nº da proposta</label><input type="text" id="ap-proposta" placeholder="Ex.: 06151J-5590665770"></div>
+              <div class="field"><label>Vigência</label><input type="text" id="ap-vigencia" placeholder="Ex.: 26/05/2026 a 26/05/2027"></div>
+              <div class="field"><label>Valor total</label><input type="text" id="ap-valor" placeholder="Ex.: R$ 1.789,57"></div>
+              <div class="field"><label>Forma de pagamento</label><input type="text" id="ap-pgto" placeholder="Ex.: 2x de R$ 894,79 Porto Bank"></div>
+              <div class="field"><label>Coberturas principais</label><input type="text" id="ap-cob" placeholder="Ex.: Compreensivo 100% FIPE, RCF R$100k, Assistência 500km"></div>
+              <div class="field"><label>Franquia</label><input type="text" id="ap-franquia" placeholder="Ex.: R$ 3.969,00 (50% obrigatória)"></div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label>Diferenciais / observações</label><textarea id="ap-obs" placeholder="Ex.: Desconto 10% cartão Porto Bank. Livre escolha de oficina."></textarea></div>
+          </div>
+          <button class="btn btn-primary" onclick="gerarEmailAuto('proposta')">✉️ Gerar e-mail de proposta</button>
+          <div class="email-output" id="out-ap">
+            <div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado com sucesso</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-ap-txt','cp-ap')">📋 Copiar</button><span class="copied-msg" id="cp-ap">✓ Copiado!</span></div></div>
+            <div class="email-box" id="out-ap-txt"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDA -->
+      <div class="section" id="sec-vida">
+        <div class="form-tabs">
+          <button class="form-tab active" onclick="switchFormTab('vida','renovacao',this)">🔄 Renovação</button>
+          <button class="form-tab" onclick="switchFormTab('vida','proposta',this)">📄 Nova Proposta</button>
+        </div>
+        <div class="form-panel active" id="vida-renovacao">
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+            <div class="grid-2">
+              <div class="field"><label>Nome completo</label><input type="text" id="vr-nome" placeholder="Nome do cliente"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="vr-email" placeholder="email@exemplo.com"></div>
+              <div class="field"><label>Telefone</label><input type="text" id="vr-tel" placeholder="(19) 99999-9999"></div>
+              <div class="field"><label>Idade</label><input type="text" id="vr-idade" placeholder="Ex.: 45 anos"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+            <div class="grid-3">
+              <div class="field"><label>Seguradora</label><select id="vr-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro</option><option>Bradesco</option><option>Itaú</option><option>Tokio Marine</option><option>Mapfre</option><option>HDI</option></select></div>
+              <div class="field"><label>Nº da proposta</label><input type="text" id="vr-proposta" placeholder="Nº da proposta"></div>
+              <div class="field"><label>Vigência</label><input type="text" id="vr-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+              <div class="field"><label>Capital segurado</label><input type="text" id="vr-capital" placeholder="Ex.: R$ 500.000,00"></div>
+              <div class="field"><label>Valor do prêmio</label><input type="text" id="vr-valor" placeholder="Ex.: R$ 1.200,00/ano"></div>
+              <div class="field"><label>Forma de pagamento</label><input type="text" id="vr-pgto" placeholder="Ex.: 12x de R$ 100,00"></div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label>Coberturas / beneficiários / observações</label><textarea id="vr-obs" placeholder="Ex.: Cobertura morte por qualquer causa, invalidez permanente, doenças graves. Beneficiários: cônjuge e filhos."></textarea></div>
+          </div>
+          <button class="btn btn-primary" onclick="gerarEmailGenerico('vida','renovacao')">✉️ Gerar e-mail de renovação</button>
+          <div class="email-output" id="out-vr"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-vr-txt','cp-vr')">📋 Copiar</button><span class="copied-msg" id="cp-vr">✓ Copiado!</span></div></div><div class="email-box" id="out-vr-txt"></div></div>
+        </div>
+        <div class="form-panel" id="vida-proposta">
+          <div class="card">
+            <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+            <div class="grid-2">
+              <div class="field"><label>Nome completo</label><input type="text" id="vp-nome" placeholder="Nome do cliente"></div>
+              <div class="field"><label>E-mail</label><input type="email" id="vp-email" placeholder="email@exemplo.com"></div>
+              <div class="field"><label>Telefone</label><input type="text" id="vp-tel" placeholder="(19) 99999-9999"></div>
+              <div class="field"><label>Idade</label><input type="text" id="vp-idade" placeholder="Ex.: 45 anos"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon" style="background:#D1FAE5;"><svg fill="none" stroke="#065f46" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+            <div class="grid-3">
+              <div class="field"><label>Seguradora</label><select id="vp-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro</option><option>Bradesco</option><option>Itaú</option><option>Tokio Marine</option><option>Mapfre</option><option>HDI</option></select></div>
+              <div class="field"><label>Nº da proposta</label><input type="text" id="vp-proposta" placeholder="Nº da proposta"></div>
+              <div class="field"><label>Vigência</label><input type="text" id="vp-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+              <div class="field"><label>Capital segurado</label><input type="text" id="vp-capital" placeholder="Ex.: R$ 500.000,00"></div>
+              <div class="field"><label>Valor do prêmio</label><input type="text" id="vp-valor" placeholder="Ex.: R$ 1.200,00/ano"></div>
+              <div class="field"><label>Forma de pagamento</label><input type="text" id="vp-pgto" placeholder="Ex.: 12x de R$ 100,00"></div>
+            </div>
+            <div class="field" style="margin-top:12px;"><label>Coberturas / beneficiários / observações</label><textarea id="vp-obs" placeholder="Ex.: Morte qualquer causa, invalidez permanente total e parcial, doenças graves."></textarea></div>
+          </div>
+          <button class="btn btn-primary" onclick="gerarEmailGenerico('vida','proposta')">✉️ Gerar e-mail de proposta</button>
+          <div class="email-output" id="out-vp"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-vp-txt','cp-vp')">📋 Copiar</button><span class="copied-msg" id="cp-vp">✓ Copiado!</span></div></div><div class="email-box" id="out-vp-txt"></div></div>
+        </div>
+      </div>
+
+      <!-- RESIDENCIAL -->
+      <div class="section" id="sec-residencial">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FEF3C7;"><svg fill="none" stroke="#92400e" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome</label><input type="text" id="res-nome" placeholder="Nome do cliente"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="res-email" placeholder="email@exemplo.com"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="res-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>Endereço do imóvel</label><input type="text" id="res-end" placeholder="Ex.: Rua das Flores, 100 - Campinas/SP"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FEF3C7;"><svg fill="none" stroke="#92400e" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Seguradora</label><select id="res-seg"><option value="">Selecione...</option><option>Porto Seguro</option><option>Allianz</option><option>Bradesco</option><option>Tokio Marine</option><option>HDI</option><option>Mapfre</option></select></div>
+            <div class="field"><label>Nº proposta</label><input type="text" id="res-proposta" placeholder="Nº da proposta"></div>
+            <div class="field"><label>Vigência</label><input type="text" id="res-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+            <div class="field"><label>Valor do imóvel</label><input type="text" id="res-imovel" placeholder="Ex.: R$ 350.000,00"></div>
+            <div class="field"><label>Valor do prêmio</label><input type="text" id="res-valor" placeholder="Ex.: R$ 480,00/ano"></div>
+            <div class="field"><label>Forma de pagamento</label><input type="text" id="res-pgto" placeholder="Ex.: À vista ou 3x no cartão"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Coberturas / observações</label><textarea id="res-obs" placeholder="Ex.: Incêndio, roubo de conteúdo, responsabilidade civil, danos elétricos, alagamento."></textarea></div>
+        </div>
+        <div class="form-tabs" style="margin-bottom:0;">
+          <button class="form-tab active" id="res-tipo-btn-ren" onclick="setTipo('res','renovacao')">🔄 Renovação</button>
+          <button class="form-tab" id="res-tipo-btn-prop" onclick="setTipo('res','proposta')">📄 Nova Proposta</button>
+        </div>
+        <input type="hidden" id="res-tipo" value="renovacao">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="gerarEmailGenerico('residencial', document.getElementById('res-tipo').value)">✉️ Gerar e-mail</button>
+        <div class="email-output" id="out-res"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-res-txt','cp-res')">📋 Copiar</button><span class="copied-msg" id="cp-res">✓ Copiado!</span></div></div><div class="email-box" id="out-res-txt"></div></div>
+      </div>
+
+      <!-- EMPRESARIAL -->
+      <div class="section" id="sec-empresarial">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FCE7F3;"><svg fill="none" stroke="#9d174d" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div><div><div class="card-title">Dados da empresa / responsável</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Razão social / Nome</label><input type="text" id="emp-nome" placeholder="Ex.: Empresa ABC Ltda."></div>
+            <div class="field"><label>E-mail</label><input type="email" id="emp-email" placeholder="email@empresa.com.br"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="emp-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>Ramo de atividade</label><input type="text" id="emp-ramo" placeholder="Ex.: Comércio varejista"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FCE7F3;"><svg fill="none" stroke="#9d174d" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Seguradora</label><select id="emp-seg"><option value="">Selecione...</option><option>Porto Seguro</option><option>Allianz</option><option>Bradesco</option><option>Zurich</option><option>Tokio Marine</option><option>HDI</option><option>Mapfre</option></select></div>
+            <div class="field"><label>Nº proposta</label><input type="text" id="emp-proposta" placeholder="Nº da proposta"></div>
+            <div class="field"><label>Vigência</label><input type="text" id="emp-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+            <div class="field"><label>Valor segurado</label><input type="text" id="emp-segurado" placeholder="Ex.: R$ 500.000,00"></div>
+            <div class="field"><label>Valor do prêmio</label><input type="text" id="emp-valor" placeholder="Ex.: R$ 2.400,00/ano"></div>
+            <div class="field"><label>Forma de pagamento</label><input type="text" id="emp-pgto" placeholder="Ex.: 6x no boleto"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Coberturas / observações</label><textarea id="emp-obs" placeholder="Ex.: Incêndio, roubo, responsabilidade civil, quebra de máquinas, lucros cessantes."></textarea></div>
+        </div>
+        <div class="form-tabs" style="margin-bottom:0;">
+          <button class="form-tab active" id="emp-tipo-btn-ren" onclick="setTipo('emp','renovacao')">🔄 Renovação</button>
+          <button class="form-tab" id="emp-tipo-btn-prop" onclick="setTipo('emp','proposta')">📄 Nova Proposta</button>
+        </div>
+        <input type="hidden" id="emp-tipo" value="renovacao">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="gerarEmailGenerico('empresarial', document.getElementById('emp-tipo').value)">✉️ Gerar e-mail</button>
+        <div class="email-output" id="out-emp"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-emp-txt','cp-emp')">📋 Copiar</button><span class="copied-msg" id="cp-emp">✓ Copiado!</span></div></div><div class="email-box" id="out-emp-txt"></div></div>
+      </div>
+
+      <!-- SAUDE -->
+      <div class="section" id="sec-saude">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#EDE9FE;"><svg fill="none" stroke="#5b21b6" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><div class="card-title">Dados do beneficiário</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome completo</label><input type="text" id="sau-nome" placeholder="Nome do titular"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="sau-email" placeholder="email@exemplo.com"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="sau-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>Nº de vidas / dependentes</label><input type="text" id="sau-vidas" placeholder="Ex.: Titular + 2 dependentes"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#EDE9FE;"><svg fill="none" stroke="#5b21b6" stroke-width="2" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Operadora</label><input type="text" id="sau-op" placeholder="Ex.: Amil, Unimed, SulAmérica"></div>
+            <div class="field"><label>Plano / Produto</label><input type="text" id="sau-plano" placeholder="Ex.: Plano Básico Enfermaria"></div>
+            <div class="field"><label>Vigência</label><input type="text" id="sau-vigencia" placeholder="Ex.: A partir de 01/07/2026"></div>
+            <div class="field"><label>Valor mensal</label><input type="text" id="sau-valor" placeholder="Ex.: R$ 890,00/mês"></div>
+            <div class="field"><label>Coparticipação</label><input type="text" id="sau-copa" placeholder="Ex.: Sim, 30% consultas"></div>
+            <div class="field"><label>Abrangência</label><input type="text" id="sau-abrang" placeholder="Ex.: Nacional / Regional SP"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Coberturas / observações</label><textarea id="sau-obs" placeholder="Ex.: Cobertura hospitalar, consultas, exames, urgência e emergência 24h."></textarea></div>
+        </div>
+        <div class="form-tabs" style="margin-bottom:0;">
+          <button class="form-tab active" id="sau-tipo-btn-ren" onclick="setTipo('sau','renovacao')">🔄 Renovação</button>
+          <button class="form-tab" id="sau-tipo-btn-prop" onclick="setTipo('sau','proposta')">📄 Nova Proposta</button>
+        </div>
+        <input type="hidden" id="sau-tipo" value="renovacao">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="gerarEmailGenerico('saude', document.getElementById('sau-tipo').value)">✉️ Gerar e-mail</button>
+        <div class="email-output" id="out-sau"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-sau-txt','cp-sau')">📋 Copiar</button><span class="copied-msg" id="cp-sau">✓ Copiado!</span></div></div><div class="email-box" id="out-sau-txt"></div></div>
+      </div>
+
+      <!-- PROFISSIONAL -->
+      <div class="section" id="sec-profissional">
+        <div class="card">
+          <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="card-title">Dados do profissional</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome completo</label><input type="text" id="prof-nome" placeholder="Nome do profissional"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="prof-email" placeholder="email@exemplo.com"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="prof-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>Profissão / especialidade</label><input type="text" id="prof-prof" placeholder="Ex.: Engenheiro Civil, Advogado, Contador"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><div><div class="card-title">Dados da proposta</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Seguradora</label><select id="prof-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro</option><option>Zurich</option><option>Tokio Marine</option><option>HDI</option></select></div>
+            <div class="field"><label>Nº proposta</label><input type="text" id="prof-proposta" placeholder="Nº da proposta"></div>
+            <div class="field"><label>Vigência</label><input type="text" id="prof-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+            <div class="field"><label>Limite de responsabilidade</label><input type="text" id="prof-limite" placeholder="Ex.: R$ 200.000,00"></div>
+            <div class="field"><label>Valor do prêmio</label><input type="text" id="prof-valor" placeholder="Ex.: R$ 1.800,00/ano"></div>
+            <div class="field"><label>Forma de pagamento</label><input type="text" id="prof-pgto" placeholder="Ex.: 3x no cartão"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Coberturas / observações</label><textarea id="prof-obs" placeholder="Ex.: Responsabilidade civil profissional por erros e omissões. Cobertura retroativa."></textarea></div>
+        </div>
+        <div class="form-tabs" style="margin-bottom:0;">
+          <button class="form-tab active" id="prof-tipo-btn-ren" onclick="setTipo('prof','renovacao')">🔄 Renovação</button>
+          <button class="form-tab" id="prof-tipo-btn-prop" onclick="setTipo('prof','proposta')">📄 Nova Proposta</button>
+        </div>
+        <input type="hidden" id="prof-tipo" value="renovacao">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="gerarEmailGenerico('profissional', document.getElementById('prof-tipo').value)">✉️ Gerar e-mail</button>
+        <div class="email-output" id="out-prof"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-prof-txt','cp-prof')">📋 Copiar</button><span class="copied-msg" id="cp-prof">✓ Copiado!</span></div></div><div class="email-box" id="out-prof-txt"></div></div>
+      </div>
+
+      <!-- RC MEDICO -->
+      <div class="section" id="sec-rcmedico">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#F0F9FF;"><svg fill="none" stroke="#0369a1" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-3-3v6"/><circle cx="12" cy="12" r="9"/></svg></div><div><div class="card-title">Dados do médico / profissional de saúde</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome completo</label><input type="text" id="rc-nome" placeholder="Nome do médico"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="rc-email" placeholder="email@clinica.com.br"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="rc-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>Especialidade médica</label><input type="text" id="rc-esp" placeholder="Ex.: Cirurgia Plástica, Cardiologia, Ortopedia"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#F0F9FF;"><svg fill="none" stroke="#0369a1" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-3-3v6"/><circle cx="12" cy="12" r="9"/></svg></div><div><div class="card-title">Dados da proposta RC Médico</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Seguradora</label><select id="rc-seg"><option value="">Selecione...</option><option>Allianz</option><option>Porto Seguro</option><option>Zurich</option><option>Tokio Marine</option><option>HDI</option><option>Mapfre</option></select></div>
+            <div class="field"><label>Nº proposta</label><input type="text" id="rc-proposta" placeholder="Nº da proposta"></div>
+            <div class="field"><label>Vigência</label><input type="text" id="rc-vigencia" placeholder="Ex.: 01/06/2026 a 01/06/2027"></div>
+            <div class="field"><label>Limite de cobertura</label><input type="text" id="rc-limite" placeholder="Ex.: R$ 500.000,00 por evento"></div>
+            <div class="field"><label>Valor do prêmio</label><input type="text" id="rc-valor" placeholder="Ex.: R$ 3.200,00/ano"></div>
+            <div class="field"><label>Forma de pagamento</label><input type="text" id="rc-pgto" placeholder="Ex.: 6x no boleto"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Coberturas / observações</label><textarea id="rc-obs" placeholder="Ex.: Responsabilidade civil médica por erros, omissões, falhas no atendimento. Cobertura retroativa de 2 anos."></textarea></div>
+        </div>
+        <div class="form-tabs" style="margin-bottom:0;">
+          <button class="form-tab active" id="rc-tipo-btn-ren" onclick="setTipo('rc','renovacao')">🔄 Renovação</button>
+          <button class="form-tab" id="rc-tipo-btn-prop" onclick="setTipo('rc','proposta')">📄 Nova Proposta</button>
+        </div>
+        <input type="hidden" id="rc-tipo" value="renovacao">
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="gerarEmailGenerico('rcmedico', document.getElementById('rc-tipo').value)">✉️ Gerar e-mail</button>
+        <div class="email-output" id="out-rc"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-rc-txt','cp-rc')">📋 Copiar</button><span class="copied-msg" id="cp-rc">✓ Copiado!</span></div></div><div class="email-box" id="out-rc-txt"></div></div>
+      </div>
+
+      <!-- CONSORCIO -->
+      <div class="section" id="sec-consorcio">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FFF7ED;"><svg fill="none" stroke="#c2410c" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome completo</label><input type="text" id="con-nome" placeholder="Nome do cliente"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="con-email" placeholder="email@exemplo.com"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="con-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>CPF/CNPJ</label><input type="text" id="con-cpf" placeholder="000.000.000-00"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#FFF7ED;"><svg fill="none" stroke="#c2410c" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 1 0 0 7h5a3.5 3.5 0 1 1 0 7H6"/></svg></div><div><div class="card-title">Dados do consórcio</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Administradora</label><input type="text" id="con-admin" placeholder="Ex.: Porto Seguro, Embracon, Caixa"></div>
+            <div class="field"><label>Tipo do bem</label><input type="text" id="con-tipo" placeholder="Ex.: Imóvel, Automóvel, Moto"></div>
+            <div class="field"><label>Crédito contratado</label><input type="text" id="con-credito" placeholder="Ex.: R$ 200.000,00"></div>
+            <div class="field"><label>Prazo</label><input type="text" id="con-prazo" placeholder="Ex.: 180 meses"></div>
+            <div class="field"><label>Parcela mensal</label><input type="text" id="con-parcela" placeholder="Ex.: R$ 1.200,00/mês"></div>
+            <div class="field"><label>Nº proposta/grupo</label><input type="text" id="con-proposta" placeholder="Ex.: Grupo 1234 / Cota 56"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Observações</label><textarea id="con-obs" placeholder="Ex.: Taxa de administração 18%, sem juros. Contemplação por sorteio ou lance."></textarea></div>
+        </div>
+        <button class="btn btn-primary" onclick="gerarEmailGenerico('consorcio','proposta')">✉️ Gerar e-mail de proposta</button>
+        <div class="email-output" id="out-con"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-con-txt','cp-con')">📋 Copiar</button><span class="copied-msg" id="cp-con">✓ Copiado!</span></div></div><div class="email-box" id="out-con-txt"></div></div>
+      </div>
+
+      <!-- FINANCIAMENTO -->
+      <div class="section" id="sec-financiamento">
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#F0FDF4;"><svg fill="none" stroke="#166534" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div><div class="card-title">Dados do cliente</div></div></div>
+          <div class="grid-2">
+            <div class="field"><label>Nome completo</label><input type="text" id="fin-nome" placeholder="Nome do cliente"></div>
+            <div class="field"><label>E-mail</label><input type="email" id="fin-email" placeholder="email@exemplo.com"></div>
+            <div class="field"><label>Telefone</label><input type="text" id="fin-tel" placeholder="(19) 99999-9999"></div>
+            <div class="field"><label>CPF/CNPJ</label><input type="text" id="fin-cpf" placeholder="000.000.000-00"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-icon" style="background:#F0FDF4;"><svg fill="none" stroke="#166534" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div><div><div class="card-title">Dados do financiamento</div></div></div>
+          <div class="grid-3">
+            <div class="field"><label>Banco / Instituição</label><input type="text" id="fin-banco" placeholder="Ex.: Caixa, Bradesco, Itaú"></div>
+            <div class="field"><label>Tipo do bem</label><input type="text" id="fin-tipo" placeholder="Ex.: Imóvel, Automóvel"></div>
+            <div class="field"><label>Valor financiado</label><input type="text" id="fin-valor-fin" placeholder="Ex.: R$ 300.000,00"></div>
+            <div class="field"><label>Prazo</label><input type="text" id="fin-prazo" placeholder="Ex.: 360 meses (30 anos)"></div>
+            <div class="field"><label>Parcela mensal</label><input type="text" id="fin-parcela" placeholder="Ex.: R$ 2.100,00/mês"></div>
+            <div class="field"><label>Taxa de juros</label><input type="text" id="fin-taxa" placeholder="Ex.: 9,5% a.a. + TR"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Observações</label><textarea id="fin-obs" placeholder="Ex.: Financiamento pelo SFH, com uso de FGTS. Entrada de R$ 50.000,00 já confirmada."></textarea></div>
+        </div>
+        <button class="btn btn-primary" onclick="gerarEmailGenerico('financiamento','proposta')">✉️ Gerar e-mail de proposta</button>
+        <div class="email-output" id="out-fin"><div class="email-result-bar"><span class="email-result-label">✅ E-mail gerado</span><div style="display:flex;align-items:center;"><button class="btn btn-secondary btn-sm" onclick="copiar('out-fin-txt','cp-fin')">📋 Copiar</button><span class="copied-msg" id="cp-fin">✓ Copiado!</span></div></div><div class="email-box" id="out-fin-txt"></div></div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL NOVO CLIENTE -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Novo Cliente</span>
+      <button class="modal-close" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Nome completo *</label><input type="text" id="mc-nome" placeholder="Nome completo"></div>
+      <div class="field"><label>E-mail *</label><input type="email" id="mc-email" placeholder="email@exemplo.com"></div>
+      <div class="field"><label>Telefone / WhatsApp</label><input type="text" id="mc-tel" placeholder="(19) 99999-9999"></div>
+      <div class="field"><label>CPF/CNPJ</label><input type="text" id="mc-cpf" placeholder="000.000.000-00"></div>
+      <div class="field"><label>Cidade/UF</label><input type="text" id="mc-cidade" placeholder="Ex.: Campinas/SP"></div>
+      <div class="field"><label>Data de nascimento</label><input type="text" id="mc-nasc" placeholder="DD/MM/AAAA"></div>
+    </div>
+    <div class="field" style="margin-top:12px;"><label>Produtos contratados</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;" id="produtos-check">
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="auto"> Seguro Auto</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="vida"> Seguro de Vida</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="residencial"> Residencial</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="empresarial"> Empresarial</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="saude"> Plano de Saúde</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="profissional"> Seg. Profissional</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="rcmedico"> RC Médico</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="consorcio"> Consórcio</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer;"><input type="checkbox" value="financiamento"> Financiamento</label>
+      </div>
+    </div>
+    <div class="field" style="margin-top:12px;"><label>Observações</label><textarea id="mc-obs" placeholder="Ex.: Cliente indicado por João, tem carro e casa para segurar."></textarea></div>
+    <input type="hidden" id="mc-id" value="">
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-primary" style="margin-top:0;" onclick="salvarCliente()">💾 Salvar cliente</button>
+      <button class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TITLES = {
+  dashboard: 'Dashboard', clientes: 'Clientes', auto: 'Seguro Auto',
+  vida: 'Seguro de Vida', residencial: 'Seguro Residencial', empresarial: 'Seguro Empresarial',
+  saude: 'Plano de Saúde', profissional: 'Seguro Profissional', rcmedico: 'RC Médico',
+  consorcio: 'Consórcio', financiamento: 'Financiamento'
+};
+const PRODUTO_LABELS = {
+  auto:'Seguro Auto', vida:'Seguro de Vida', residencial:'Residencial', empresarial:'Empresarial',
+  saude:'Plano de Saúde', profissional:'Seg. Profissional', rcmedico:'RC Médico',
+  consorcio:'Consórcio', financiamento:'Financiamento'
+};
+const PRODUTO_TAG = {
+  auto:'tag-auto', vida:'tag-vida', residencial:'tag-res', empresarial:'tag-emp',
+  saude:'tag-saude', profissional:'tag-prof', rcmedico:'tag-rc',
+  consorcio:'tag-cons', financiamento:'tag-fin'
+};
+
+const clientesIniciais = [
+  {
+    id: '1001',
+    nome: 'Solange Aparecida Zorge Vasconcelos',
+    email: 'solangezorge@gmail.com',
+    tel: '(19) 98819-8812',
+    cpf: '149.877.648-57',
+    cidade: 'Artur Nogueira/SP',
+    nasc: '',
+    obs: 'Renovação Allianz Auto 2026. Veículo: Toyota Yaris Sedan XS Connect 1.5 2021, Placa DVK9E35. Apólice anterior Porto Seguro nº 16654802. Proposta Allianz nº 138140063, vigência 31/05/2026 a 31/05/2027. Valor: R$ 1.999,51 em 10x de R$ 199,95. Cobertura compreensiva 100% FIPE, RCF R$100k, vidros Plano 2, assistência 24h Plano 3, carro reserva 7 dias. Classe bônus 02.',
+    produtos: ['auto'],
+    criado: '26/05/2026'
+  },
+  {
+    id: '1002',
+    nome: 'Luís Carlos Azevedo',
+    email: 'luis.azevedo01@hotmail.com',
+    tel: '(19) 99245-7120',
+    cpf: '178.914.388-89',
+    cidade: 'Hortolândia/SP',
+    nasc: '16/03/1972',
+    obs: 'Renovação Azul/Porto Seguro Auto 2026. Veículo: GM Montana Pick-Up LS 1.4 Econoflex 2012, Placa FBA8921. Apólice anterior Azul nº 16551582. Proposta nº 06151J-5590665770-0-1, vigência 26/05/2026 a 26/05/2027. Valor: R$ 1.789,57 em 2x de R$ 894,79 cartão Porto Bank (desconto 10%). Cobertura compreensiva 100% FIPE, RCF danos materiais e corporais R$100k, vidros referenciada, assistência 500km. Classe bônus 3.',
+    produtos: ['auto'],
+    criado: '22/05/2026'
+  }
+];
+const savedClientes = localStorage.getItem('vs_clientes');
+let clientes = savedClientes ? JSON.parse(savedClientes) : clientesIniciais;
+if (!savedClientes) { localStorage.setItem('vs_clientes', JSON.stringify(clientesIniciais)); }
+let emailCount = 0, renovCount = 0, propoCount = 0;
+
+// ── SHEETY API ──────────────────────────────────────────
+const API_URL = localStorage.getItem('vs_api_url') || '';
+let usando_sheets = false;
+
+function salvarStorage() {
+  localStorage.setItem('vs_clientes', JSON.stringify(clientes));
+}
+
+async function apiCall(dados) {
+  if (!API_URL) return null;
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(dados)
+    });
+    return await r.json();
+  } catch(e) {
+    console.error('API erro:', e);
+    return null;
+  }
+}
+
+async function carregarDoSheets() {
+  if (!API_URL) {
+    mostrarStatusSheets('⚠️ Configure a URL do Apps Script para sincronizar.', 'warn');
+    return;
+  }
+  mostrarLoadingSheets(true);
+  const res = await apiCall({ acao: 'listar' });
+  if (res && res.ok) {
+    usando_sheets = true;
+    if (res.clientes && res.clientes.length > 0) {
+      clientes = res.clientes;
+      salvarStorage();
+    }
+    renderClientes();
+    atualizarDashboard();
+    mostrarStatusSheets('✅ Conectado! ' + clientes.length + ' clientes carregados.', 'ok');
+  } else {
+    mostrarStatusSheets('⚠️ Não foi possível conectar. Verifique a URL.', 'warn');
+  }
+  mostrarLoadingSheets(false);
+}
+
+function mostrarLoadingSheets(show) {
+  const el = document.getElementById('sheets-loading');
+  if (el) el.style.display = show ? 'inline-block' : 'none';
+}
+
+function mostrarStatusSheets(msg, tipo) {
+  const el = document.getElementById('sheets-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.background = tipo === 'ok' ? '#D4EDDA' : '#FFF8E1';
+  el.style.color = tipo === 'ok' ? '#1A6B3C' : '#7A5800';
+  el.style.display = 'inline-block';
+  setTimeout(() => { el.style.display = 'none'; }, 6000);
+}
+
+function configurarSheets() {
+  const url = document.getElementById('input-api-url').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('URL inválida. Cole a URL exata gerada pelo Apps Script.');
+    return;
+  }
+  localStorage.setItem('vs_api_url', url);
+  // reload API_URL
+  window.API_URL = url;
+  document.getElementById('modal-sheets').classList.remove('open');
+  carregarDoSheets();
+}
+
+function navTo(sec, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('topbar-title').innerHTML = TITLES[sec] + '<span id="topbar-sub"></span>';
+  if (sec === 'dashboard') atualizarDashboard();
+  if (sec === 'clientes') renderClientes();
+}
+
+function switchFormTab(produto, panel, el) {
+  const prefix = produto + '-';
+  document.querySelectorAll('#sec-' + produto + ' .form-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#sec-' + produto + ' .form-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(prefix + panel).classList.add('active');
+}
+
+function setTipo(prefix, tipo) {
+  document.getElementById(prefix + '-tipo').value = tipo;
+  document.getElementById(prefix + '-tipo-btn-ren').classList.toggle('active', tipo === 'renovacao');
+  document.getElementById(prefix + '-tipo-btn-prop').classList.toggle('active', tipo === 'proposta');
+}
+
+function abrirNovoCliente(id) {
+  document.getElementById('mc-id').value = id || '';
+  if (id) {
+    const c = clientes.find(x => x.id == id);
+    if (c) {
+      document.getElementById('mc-nome').value = c.nome || '';
+      document.getElementById('mc-email').value = c.email || '';
+      document.getElementById('mc-tel').value = c.tel || '';
+      document.getElementById('mc-cpf').value = c.cpf || '';
+      document.getElementById('mc-cidade').value = c.cidade || '';
+      document.getElementById('mc-nasc').value = c.nasc || '';
+      document.getElementById('mc-obs').value = c.obs || '';
+      document.getElementById('modal-title').textContent = 'Editar Cliente';
+      document.querySelectorAll('#produtos-check input').forEach(cb => { cb.checked = (c.produtos || []).includes(cb.value); });
+    }
+  } else {
+    document.getElementById('modal-title').textContent = 'Novo Cliente';
+    ['mc-nome','mc-email','mc-tel','mc-cpf','mc-cidade','mc-nasc','mc-obs'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('#produtos-check input').forEach(cb => cb.checked = false);
+  }
+  document.getElementById('modal-cliente').classList.add('open');
+}
+
+function fecharModal() { document.getElementById('modal-cliente').classList.remove('open'); }
+
+function salvarCliente() {
+  const nome = document.getElementById('mc-nome').value.trim();
+  const email = document.getElementById('mc-email').value.trim();
+  if (!nome) { alert('Por favor, informe o nome do cliente.'); return; }
+  const produtos = [...document.querySelectorAll('#produtos-check input:checked')].map(c => c.value);
+  const id = document.getElementById('mc-id').value || Date.now().toString();
+  const dados = { id, nome, email, tel: document.getElementById('mc-tel').value, cpf: document.getElementById('mc-cpf').value, cidade: document.getElementById('mc-cidade').value, nasc: document.getElementById('mc-nasc').value, obs: document.getElementById('mc-obs').value, produtos, criado: new Date().toLocaleDateString('pt-BR') };
+  const idx = clientes.findIndex(c => c.id == id);
+  if (idx >= 0) clientes[idx] = dados; else clientes.unshift(dados);
+  salvarStorage();
+  if (usando_sheets) {
+    apiCall({ acao: 'salvar', cliente: dados }).then(res => {
+      mostrarStatusSheets('✅ Salvo no Google Sheets!', 'ok');
+    });
+  }
+  fecharModal();
+  renderClientes();
+  atualizarDashboard();
+}
+
+function excluirCliente(id) {
+  if (!confirm('Excluir este cliente?')) return;
+  const clienteExcluido = clientes.find(c => c.id == id);
+  clientes = clientes.filter(c => c.id != id);
+  salvarStorage();
+  if (usando_sheets && clienteExcluido) {
+    apiCall({ acao: 'excluir', id: clienteExcluido.id }).then(() => mostrarStatusSheets('🗑️ Removido da planilha.', 'ok'));
+  }
+  renderClientes();
+  atualizarDashboard();
+}
+
+function renderClientes(lista) {
+  const arr = lista || clientes;
+  const el = document.getElementById('lista-clientes');
+  if (!arr.length) { el.innerHTML = '<div class="empty-state"><svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg><p>Nenhum cliente cadastrado ainda</p><small>Clique em "Novo Cliente" para começar</small></div>'; return; }
+  el.innerHTML = '<div class="client-list">' + arr.map(c => `
+    <div class="client-card">
+      <div class="client-avatar">${c.nome.charAt(0).toUpperCase()}</div>
+      <div class="client-info">
+        <div class="client-name">${c.nome}</div>
+        <div class="client-meta">${[c.email, c.tel, c.cidade].filter(Boolean).join(' · ')}</div>
+        <div class="client-tags">${(c.produtos||[]).map(p => `<span class="tag ${PRODUTO_TAG[p]||''}">${PRODUTO_LABELS[p]||p}</span>`).join('')}</div>
+      </div>
+      <div class="client-actions">
+        <button class="btn btn-secondary btn-sm" onclick="abrirNovoCliente('${c.id}')">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="excluirCliente('${c.id}')">🗑️</button>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+function filtrarClientes() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  renderClientes(clientes.filter(c => [c.nome,c.email,c.tel].some(f => f && f.toLowerCase().includes(q))));
+}
+
+function atualizarDashboard() {
+  document.getElementById('stat-clientes').textContent = clientes.length;
+  document.getElementById('stat-emails').textContent = emailCount;
+  document.getElementById('stat-renovacoes').textContent = renovCount;
+  document.getElementById('stat-propostas').textContent = propoCount;
+  const recent = clientes.slice(0,5);
+  const el = document.getElementById('dashboard-recent');
+  if (!recent.length) { el.innerHTML = '<div style="color:var(--text2);font-size:14px;padding:12px 0;">Nenhum cliente cadastrado ainda.</div>'; return; }
+  el.innerHTML = '<div class="client-list">' + recent.map(c => `
+    <div class="client-card" style="cursor:default;">
+      <div class="client-avatar">${c.nome.charAt(0).toUpperCase()}</div>
+      <div class="client-info">
+        <div class="client-name">${c.nome}</div>
+        <div class="client-meta">${c.email || c.tel || ''}</div>
+        <div class="client-tags">${(c.produtos||[]).map(p => `<span class="tag ${PRODUTO_TAG[p]||''}">${PRODUTO_LABELS[p]||p}</span>`).join('')}</div>
+      </div>
+      <div><span style="font-size:12px;color:var(--text3);">${c.criado||''}</span></div>
+    </div>`).join('') + '</div>';
+}
+
+function assinatura() {
+  return `Atenciosamente,\n\nMarcelo Vomero\nVomero & Silva Corretora de Seguros Ltda.\nSUSEP Nº 202056495\nTel.: (19) 3844-8428\nE-mail: marcelo@voneroesilvaseguros.com.br`;
+}
+
+function linha() { return '─────────────────────────────────'; }
+
+function gerarEmailAuto(tipo) {
+  const p = tipo === 'renovacao' ? 'ar' : 'ap';
+  const g = id => document.getElementById(id).value || '';
+  const nome = g(p+'-nome') || '[Nome do Cliente]';
+  const veiculo = g(p+'-veiculo') || '[Veículo]';
+  const placa = g(p+'-placa') || '[Placa]';
+  const seg = g(p+'-seg') || '[Seguradora]';
+  const proposta = g(p+'-proposta') || '[Nº Proposta]';
+  const vigencia = g(p+'-vigencia') || '[Vigência]';
+  const valor = g(p+'-valor') || '[Valor]';
+  const pgto = g(p+'-pgto') || '[Pagamento]';
+  const cob = g(p+'-cob') || '[Coberturas]';
+  const franquia = g(p+'-franquia') || '[Franquia]';
+  const obs = g(p+'-obs');
+
+  let body = '';
+  if (tipo === 'renovacao') {
+    const segAnt = g('ar-seg-ant'), valAnt = g('ar-val-ant');
+    let comp = '';
+    if (segAnt || valAnt) {
+      comp = `\n${linha()}\nCOMPARATIVO COM O SEGURO ANTERIOR\n${linha()}\n`;
+      if (segAnt) comp += `• Seguradora anterior: ${segAnt}\n`;
+      if (valAnt) comp += `• Valor anterior: ${valAnt}\n`;
+      comp += `• Seguradora renovação: ${seg}\n• Valor renovação: ${valor}\n`;
+    }
+    body = `Assunto: Renovação do Seguro Auto — ${veiculo} | Proposta Nº ${proposta}\n\nPrezado(a) ${nome},\n\nEspero que esteja bem.\n\nSegue abaixo a proposta de renovação do seguro do seu veículo, elaborada pela Vomero & Silva Corretora de Seguros para sua apreciação.\n\n${linha()}\nDADOS DO VEÍCULO SEGURADO\n${linha()}\n• Veículo: ${veiculo}\n• Placa: ${placa}\n• Seguradora: ${seg}\n• Nº da Proposta: ${proposta}\n• Vigência: ${vigencia}\n\n${linha()}\nCOBERTURAS CONTRATADAS\n${linha()}\n• ${cob}\n• Franquia: ${franquia}\n${comp}\n${linha()}\nVALOR E FORMA DE PAGAMENTO\n${linha()}\n• Valor total: ${valor}\n• Pagamento: ${pgto}${obs ? `\n\n${linha()}\nOBSERVAÇÕES\n${linha()}\n${obs}` : ''}\n\n${linha()}\n\nPara confirmar a renovação ou esclarecer dúvidas, entre em contato conosco. Estamos à total disposição.\n\n${assinatura()}`;
+    renovCount++;
+  } else {
+    body = `Assunto: Proposta de Seguro Auto — ${veiculo} | ${seg} | Nº ${proposta}\n\nPrezado(a) ${nome},\n\nEspero que esteja bem.\n\nConforme conversamos, segue abaixo a proposta de seguro para o seu veículo, elaborada pela Vomero & Silva Corretora de Seguros.\n\n${linha()}\nDADOS DO VEÍCULO\n${linha()}\n• Veículo: ${veiculo}\n• Placa: ${placa}\n• Seguradora: ${seg}\n• Nº da Proposta: ${proposta}\n• Vigência: ${vigencia}\n\n${linha()}\nCOBERTURAS CONTRATADAS\n${linha()}\n• ${cob}\n• Franquia: ${franquia}${obs ? `\n\n${linha()}\nDIFERENCIAIS DA PROPOSTA\n${linha()}\n${obs}` : ''}\n\n${linha()}\nVALOR E FORMA DE PAGAMENTO\n${linha()}\n• Valor total: ${valor}\n• Pagamento: ${pgto}\n\n${linha()}\n\nCaso queira prosseguir ou tenha dúvidas sobre as coberturas, estou à inteira disposição.\n\n${assinatura()}`;
+    propoCount++;
+  }
+  emailCount++;
+  const outId = tipo === 'renovacao' ? 'out-ar' : 'out-ap';
+  document.getElementById(outId + '-txt').textContent = body;
+  document.getElementById(outId).classList.add('visible');
+  atualizarDashboard();
+  setTimeout(() => document.getElementById(outId).scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function gerarEmailGenerico(produto, tipo) {
+  const mapa = {
+    vida: { titulo: 'Seguro de Vida', prefix_ren: 'vr', prefix_prop: 'vp', campos_extra: (p) => {
+      const idade = document.getElementById(p+'-idade').value;
+      const capital = document.getElementById(p+'-capital').value;
+      return { extra1: idade ? `• Idade do segurado: ${idade}\n` : '', extra2: capital ? `• Capital segurado: ${capital}\n` : '' };
+    }},
+    residencial: { titulo: 'Seguro Residencial', prefix: 'res', campos_extra: (p) => {
+      const end = document.getElementById('res-end').value;
+      const imovel = document.getElementById('res-imovel').value;
+      return { extra1: end ? `• Endereço do imóvel: ${end}\n` : '', extra2: imovel ? `• Valor do imóvel: ${imovel}\n` : '' };
+    }},
+    empresarial: { titulo: 'Seguro Empresarial', prefix: 'emp', campos_extra: (p) => {
+      const ramo = document.getElementById('emp-ramo').value;
+      const seg = document.getElementById('emp-segurado').value;
+      return { extra1: ramo ? `• Ramo de atividade: ${ramo}\n` : '', extra2: seg ? `• Valor segurado: ${seg}\n` : '' };
+    }},
+    saude: { titulo: 'Plano de Saúde', prefix: 'sau', campos_extra: (p) => {
+      const vidas = document.getElementById('sau-vidas').value;
+      const plano = document.getElementById('sau-plano').value;
+      const copa = document.getElementById('sau-copa').value;
+      const abrang = document.getElementById('sau-abrang').value;
+      return { extra1: (vidas ? `• Beneficiários: ${vidas}\n` : '') + (plano ? `• Plano: ${plano}\n` : ''), extra2: (copa ? `• Coparticipação: ${copa}\n` : '') + (abrang ? `• Abrangência: ${abrang}\n` : '') };
+    }},
+    profissional: { titulo: 'Seguro de Responsabilidade Civil Profissional', prefix: 'prof', campos_extra: (p) => {
+      const prof = document.getElementById('prof-prof').value;
+      const limite = document.getElementById('prof-limite').value;
+      return { extra1: prof ? `• Profissão: ${prof}\n` : '', extra2: limite ? `• Limite de responsabilidade: ${limite}\n` : '' };
+    }},
+    rcmedico: { titulo: 'Seguro de Responsabilidade Civil Médica', prefix: 'rc', campos_extra: (p) => {
+      const esp = document.getElementById('rc-esp').value;
+      const limite = document.getElementById('rc-limite').value;
+      return { extra1: esp ? `• Especialidade: ${esp}\n` : '', extra2: limite ? `• Limite de cobertura: ${limite}\n` : '' };
+    }},
+    consorcio: { titulo: 'Consórcio', prefix: 'con', isFinanceiro: true, campos_extra: (p) => {
+      const admin = document.getElementById('con-admin').value;
+      const tipo2 = document.getElementById('con-tipo').value;
+      const credito = document.getElementById('con-credito').value;
+      const prazo = document.getElementById('con-prazo').value;
+      const parcela = document.getElementById('con-parcela').value;
+      return { extra1: (admin ? `• Administradora: ${admin}\n` : '') + (tipo2 ? `• Tipo do bem: ${tipo2}\n` : ''), extra2: (credito ? `• Crédito contratado: ${credito}\n` : '') + (prazo ? `• Prazo: ${prazo}\n` : '') + (parcela ? `• Parcela mensal: ${parcela}\n` : '') };
+    }},
+    financiamento: { titulo: 'Financiamento', prefix: 'fin', isFinanceiro: true, campos_extra: (p) => {
+      const banco = document.getElementById('fin-banco').value;
+      const tipo2 = document.getElementById('fin-tipo').value;
+      const vf = document.getElementById('fin-valor-fin').value;
+      const prazo = document.getElementById('fin-prazo').value;
+      const parcela = document.getElementById('fin-parcela').value;
+      const taxa = document.getElementById('fin-taxa').value;
+      return { extra1: (banco ? `• Banco/Instituição: ${banco}\n` : '') + (tipo2 ? `• Tipo do bem: ${tipo2}\n` : ''), extra2: (vf ? `• Valor financiado: ${vf}\n` : '') + (prazo ? `• Prazo: ${prazo}\n` : '') + (parcela ? `• Parcela mensal: ${parcela}\n` : '') + (taxa ? `• Taxa de juros: ${taxa}\n` : '') };
+    }}
+  };
+
+  const cfg = mapa[produto];
+  if (!cfg) return;
+
+  let prefix = '';
+  if (produto === 'vida') prefix = tipo === 'renovacao' ? 'vr' : 'vp';
+  else prefix = cfg.prefix;
+
+  const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const nome = g(prefix+'-nome') || '[Nome do Cliente]';
+  const email = g(prefix+'-email') || '';
+  const proposta = g(prefix+'-proposta') || '[Nº Proposta]';
+  const seg = g(prefix+'-seg') || g(prefix+'-op') || g(prefix+'-admin') || g(prefix+'-banco') || '[Seguradora/Operadora]';
+  const vigencia = g(prefix+'-vigencia') || '';
+  const valor = g(prefix+'-valor') || '[Valor]';
+  const pgto = g(prefix+'-pgto') || '[Pagamento]';
+  const obs = g(prefix+'-obs') || '';
+  const { extra1, extra2 } = cfg.campos_extra(prefix);
+
+  const eTipo = tipo === 'renovacao' ? 'Renovação' : 'Proposta';
+  const intro = tipo === 'renovacao'
+    ? `Segue abaixo a proposta de renovação do ${cfg.titulo.toLowerCase()}, elaborada pela Vomero & Silva Corretora de Seguros para sua apreciação.`
+    : `Conforme conversamos, segue abaixo a proposta de ${cfg.titulo.toLowerCase()}, elaborada pela Vomero & Silva Corretora de Seguros.`;
+
+  const body = `Assunto: ${eTipo} — ${cfg.titulo}${proposta !== '[Nº Proposta]' ? ` | Proposta Nº ${proposta}` : ''}\n\nPrezado(a) ${nome},\n\nEspero que esteja bem.\n\n${intro}\n\n${linha()}\nDADOS DA PROPOSTA\n${linha()}\n${extra1}${seg ? `• Seguradora/Operadora: ${seg}\n` : ''}${proposta !== '[Nº Proposta]' ? `• Nº da Proposta: ${proposta}\n` : ''}${vigencia ? `• Vigência: ${vigencia}\n` : ''}${extra2}\n${linha()}\nVALOR E FORMA DE PAGAMENTO\n${linha()}\n• Valor: ${valor}\n• Pagamento: ${pgto}${obs ? `\n\n${linha()}\nOBSERVAÇÕES\n${linha()}\n${obs}` : ''}\n\n${linha()}\n\n${tipo === 'renovacao' ? 'Para confirmar a renovação ou esclarecer dúvidas, entre em contato conosco. Estamos à total disposição.' : 'Caso queira prosseguir ou tenha dúvidas sobre as condições, estou à inteira disposição.'}\n\n${assinatura()}`;
+
+  emailCount++;
+  if (tipo === 'renovacao') renovCount++; else propoCount++;
+  const outId = 'out-' + (produto === 'vida' ? (tipo === 'renovacao' ? 'vr' : 'vp') : produto === 'rcmedico' ? 'rc' : produto === 'profissional' ? 'prof' : produto === 'consorcio' ? 'con' : produto === 'financiamento' ? 'fin' : produto === 'residencial' ? 'res' : produto === 'empresarial' ? 'emp' : produto === 'saude' ? 'sau' : produto);
+  document.getElementById(outId+'-txt').textContent = body;
+  document.getElementById(outId).classList.add('visible');
+  atualizarDashboard();
+  setTimeout(() => document.getElementById(outId).scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function copiar(txtId, msgId) {
+  navigator.clipboard.writeText(document.getElementById(txtId).textContent).then(() => {
+    const el = document.getElementById(msgId);
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2500);
+  });
+}
+
+atualizarDashboard();
+checkNovoCliente();
+
+function checkNovoCliente() {
+  try {
+    const novo = localStorage.getItem('vs_novo_cliente');
+    if (!novo) return;
+    const d = JSON.parse(novo);
+    const banner = document.getElementById('notif-banner');
+    const msg = document.getElementById('notif-msg');
+    let txt = '';
+    if (d.status === 'ok') {
+      txt = `✅ Novo cliente cadastrado via formulário: <strong>${d.nome}</strong> — ${d.hora}. Todos os dados estão corretos!`;
+    } else {
+      txt = `⚠️ Novo cliente via formulário: <strong>${d.nome}</strong> — ${d.hora}. Atenção: ${d.erros.join(', ')}.`;
+    }
+    msg.innerHTML = txt;
+    banner.style.display = 'flex';
+    // Refresh clients list to include new one
+    const savedClientes = localStorage.getItem('vs_clientes');
+    if (savedClientes) clientes = JSON.parse(savedClientes);
+    atualizarDashboard();
+  } catch(e) {}
+}
+
+function fecharNotif() {
+  document.getElementById('notif-banner').style.display = 'none';
+  localStorage.removeItem('vs_novo_cliente');
+}
+
+function irParaClientesNotif() {
+  fecharNotif();
+  const btn = [...document.querySelectorAll('.nav-item')].find(b => b.textContent.trim().startsWith('Clientes'));
+  if (btn) navTo('clientes', btn);
+  renderClientes();
+}
+
+// Verifica novos clientes a cada 10 segundos (para quando formulário e assistente abertos juntos)
+setInterval(() => {
+  const novo = localStorage.getItem('vs_novo_cliente');
+  const banner = document.getElementById('notif-banner');
+  if (novo && banner.style.display === 'none') checkNovoCliente();
+}, 10000);
+</script>
+<!-- MODAL GOOGLE SHEETS -->
+<div class="modal-overlay" id="modal-sheets">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">🔗 Conectar ao Google Sheets</span>
+      <button class="modal-close" onclick="document.getElementById('modal-sheets').classList.remove('open')">✕</button>
+    </div>
+    <div style="font-size:13.5px;color:#4A5568;line-height:1.7;margin-bottom:16px;">
+      Ao conectar, todos os seus clientes ficam salvos na nuvem via <strong>Sheety + Google Sheets</strong> e acessíveis de qualquer dispositivo.
+    </div>
+    <div class="field">
+      <label>URL do Google Apps Script <span style="color:#29ABE2;">*</span></label>
+      <input type="text" id="input-api-url" placeholder="https://script.google.com/macros/s/...../exec" style="font-size:12.5px;">
+      <div style="font-size:12px;color:#6B7A8A;margin-top:4px;" id="url-atual-display"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-primary" style="margin-top:0;" onclick="configurarSheets()">🔗 Conectar e sincronizar</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-sheets').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
